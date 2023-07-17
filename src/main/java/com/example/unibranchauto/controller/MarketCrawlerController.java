@@ -15,7 +15,10 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -23,10 +26,18 @@ public class MarketCrawlerController {
     private final Playwright playwright = Playwright.create();
     private final Browser browser;
 
+    private final BrowserContext context;
+
     public MarketCrawlerController() {
 //        browser = Playwright.create().chromium().launch();
 
-        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
+//        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
+
+        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false)
+                .setArgs(Arrays.asList("--load-extension=/Users/chosungjae/Library/Application Support/Google/Chrome/Default/Extensions/kopggmlhnhalanhapdmflfmboikpjjmn")));
+
+        context = browser.newContext();
+
     }
 
 //    @GetMapping(value = "/v1/market-crawler/products")
@@ -92,7 +103,7 @@ public class MarketCrawlerController {
     @GetMapping(value = "/v1/market-crawler/products")
     public ResponseEntity<String> getMarketProducts(@RequestParam(name = "url") String url) {
         try {
-            Page page = browser.newPage();
+            Page page = context.newPage();
             page.navigate(url);
 
             // CategoryProducts 아이디를 가진 div 요소의 하위에 있는 ul 요소 선택
@@ -113,8 +124,7 @@ public class MarketCrawlerController {
                 // TODO: base64Image를 사용하여 타오바오 홈페이지에서 이미지 검색 API 호출 및 결과 처리
                 performImageSearch(base64Image);
 
-                // 예시: 이미지를 파일로 저장
-                saveImageAsFile(base64Image);
+
             }
 
             return new ResponseEntity<>("Success", HttpStatus.OK);
@@ -133,12 +143,21 @@ public class MarketCrawlerController {
         return Base64.getEncoder().encodeToString(imageBytes);
     }
 
-    // Base64로 인코딩된 이미지를 파일로 저장
-    private void saveImageAsFile(String imageURL) throws Exception {
-        byte[] imageBytes = downloadImage(imageURL);
-        String fileName = getFileNameFromURL(imageURL);
-        Path filePath = Path.of(fileName);
-        Files.write(filePath, imageBytes);
+    private String saveImageAsFile(String base64Image) throws IOException {
+        byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+        String fileName = generateFileName(); // 파일 이름 생성
+        String filePath = "/Users/chosungjae/Documents/autoCollect/" + fileName; // 저장할 디렉토리 경로와 파일 이름을 결합
+        Files.write(Paths.get(filePath), imageBytes);
+        return filePath;
+    }
+
+    // 임의의 파일 이름을 생성하여 반환
+    private String generateFileName() {
+        // 파일 이름 생성 로직을 구현해주세요.
+        // 예시: 현재 시간 기반으로 고유한 파일 이름 생성
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String timestamp = dateFormat.format(new Date());
+        return "image_" + timestamp + ".jpg";
     }
 
     private String getFileNameFromURL(String imageURL) {
@@ -169,17 +188,43 @@ public class MarketCrawlerController {
     // 타오바오 이미지 검색 기능 수행
     private void performImageSearch(String base64Image) {
         try {
+
+            String filePath = saveImageAsFile(base64Image);
             BrowserContext context = browser.newContext();
             Page searchPage = context.newPage();
             searchPage.navigate("https://www.taobao.com");
 
             // 타오바오 이미지 검색 페이지로 이동
-            searchPage.navigate("https://s.taobao.com/image");
+//            searchPage.navigate("https://s.taobao.com/image");
 
-            // 이미지 업로드 버튼 선택
-            ElementHandle uploadButton = searchPage.querySelector(".component-search-icon");
-            uploadButton.setInputFiles(Paths.get("image.jpg"));
+            // 이미지 업로드 버튼 대기 및 선택
+            String uploadButtonSelector = "#component-search-paste-wrapper > div.component-search-icon-container > img.component-search-icon.component-search-icon-common";
+            ElementHandle uploadButton = searchPage.waitForSelector(uploadButtonSelector);
+            if (uploadButton == null) {
+                // 엘리먼트를 찾지 못한 경우 예외 처리
+                throw new RuntimeException("Failed to find upload button");
+            }
 
+            // 이미지 업로드 버튼 클릭
+            uploadButton.click();
+
+            // 파일 업로드 팝업 대기
+            String fileUploadPopupSelector = "input[type='file']";
+            ElementHandle fileUploadPopup = searchPage.waitForSelector(fileUploadPopupSelector);
+            if (fileUploadPopup == null) {
+                // 엘리먼트를 찾지 못한 경우 예외 처리
+                throw new RuntimeException("Failed to find file upload popup");
+            }
+
+            Path file = Paths.get(filePath);
+            Path normalizedPath = file.toAbsolutePath().normalize();
+
+            if (Files.exists(file)) {
+                ElementHandle fileInput = (ElementHandle) fileUploadPopup.asElement();
+                fileInput.setInputFiles(Paths.get(filePath));
+            } else {
+                throw new RuntimeException("File does not exist: " + filePath);
+            }
 
             // 로딩 상태가 "로딩 완료" 상태가 될 때까지 대기
             searchPage.waitForLoadState(LoadState.LOAD);
