@@ -1,5 +1,6 @@
 package com.example.unibranchauto.service;
 
+import com.example.unibranchauto.domain.ProductDto;
 import com.example.unibranchauto.domain.SearchResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -115,6 +116,62 @@ public class NaverCrawlerService {
             }
         }
         return keyword;
+    }
+
+    public Map<String, Object> findKeywords(String query, List<ProductDto> products) {
+        List<String> keywords = new ArrayList<>();
+        TreeSet<String> categories = new TreeSet<>();
+        TreeSet<String> keywordSet = new TreeSet<>();
+        TreeMap<String, Integer> keywordMap = new TreeMap<>();
+        for (ProductDto product : products) {
+            if (product.getBrand().equals("") && product.getMaker().equals("")) {
+                String title = product.getTitle();
+                title = removeHtmlTags(title);
+                String keywordArr[] = title.split(" ");
+                keywords.addAll(Arrays.stream(keywordArr).toList());
+                categories.add(product.getCategory1() + "/" + product.getCategory2() + "/" + product.getCategory3() + "/" + product.getCategory4());
+            }
+        }
+
+        for (String keyword : keywords) {
+            keyword = removeMainKeywords(query, keyword);
+            if (!keywordSet.contains(keyword) && !keyword.equals(" ")) {
+                keywordSet.add(keyword);
+            }
+        }
+
+        for (String keyword : keywordSet) {
+            keywordMap.put(keyword, Collections.frequency(keywords, keyword));
+        }
+
+        Set<String> usedKeywords = new HashSet<>();
+
+        List<String> combinedKeywordsList = new ArrayList<>();
+        String combinedKeywords = "";
+        for (int i = 0; i < 20; i++) {
+            combinedKeywords = combineKeywords(query, keywordMap);
+            combinedKeywordsList.add(combinedKeywords);
+        }
+
+        Set<String> uniqueTags = new HashSet<>();
+        for (int i = 0; i < 3; i++) {
+            String[] tags = combinedKeywordsList.get(i).split(" ");
+
+            for (String tag : tags) {
+                uniqueTags.add(tag);
+            }
+        }
+
+        String[] uniqueTagArray = uniqueTags.toArray(new String[0]);
+        String joinedString = String.join(",", uniqueTagArray);
+
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("categories", categories);
+        map.put("items", combinedKeywordsList);
+        map.put("tags", joinedString);
+
+        return map;
     }
 
 }

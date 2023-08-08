@@ -2,17 +2,21 @@ package com.example.unibranchauto.controller;
 
 import com.example.unibranchauto.domain.ProductDto;
 import com.example.unibranchauto.domain.SearchResponseDto;
+import com.example.unibranchauto.service.ExcelImportService;
 import com.example.unibranchauto.service.NaverCrawlerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @RestController
@@ -21,6 +25,8 @@ import java.util.*;
 public class NaverCrawlerController {
 
     private final NaverCrawlerService naverCrawlerService;
+
+    private final ExcelImportService excelImportService;
 
     private String clientId = "LhOisVBX40SHXyvOt_WE";
 
@@ -151,5 +157,26 @@ public class NaverCrawlerController {
         String[] uniqueTagArray = uniqueTags.toArray(new String[0]);
         String joinedString = String.join(",", uniqueTagArray);
         return ResponseEntity.ok(joinedString);
+    }
+
+
+    /**
+     * 채널 개편 작업 > 엑셀 파일 대상 채널 라인업 추출
+     * @param file
+     */
+    @PostMapping(value = "/v1/excel", produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public ResponseEntity<Object> findListByExcel(@RequestPart("file") MultipartFile file) throws Exception {
+
+        Resource resource = excelImportService.findListByExcel(file);
+
+        ZonedDateTime date = ZonedDateTime.now();
+        String timestamp = date.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        String fileName = "application_schedule_" + timestamp.substring(0, 12) + ".xlsx";
+
+        // Set response headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentDispositionFormData("attachment", fileName);
+
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 }
