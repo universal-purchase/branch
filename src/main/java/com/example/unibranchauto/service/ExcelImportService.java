@@ -2,6 +2,7 @@ package com.example.unibranchauto.service;
 
 import com.example.unibranchauto.domain.ProductDto;
 import com.example.unibranchauto.domain.SearchResponseDto;
+import com.example.unibranchauto.domain.ShippingCost;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -79,7 +80,7 @@ public class ExcelImportService {
                 // 컬럼 인덱스를 이용하여 값 읽기
                 String category = getStringCellValue(row.getCell(categoryColumnIndex));
                 String productName = getStringCellValue(row.getCell(productNameColumnIndex));
-                String additionalShippingCost = getStringCellValue(row.getCell(additionalShippingCostColumnIndex));
+                int additionalShippingCost = getNumericCellValue(row.getCell(additionalShippingCostColumnIndex));
                 String parsingLink = getStringCellValue(row.getCell(parsingLinkColumnIndex));
                 int byteCount = getNumericCellValue(row.getCell(byteCountColumnIndex));
                 String caution = getStringCellValue(row.getCell(cautionColumnIndex));
@@ -106,7 +107,7 @@ public class ExcelImportService {
                 // 컬럼 인덱스를 이용하여 값 읽기
                 String category = getStringCellValue(row.getCell(categoryColumnIndex));
                 String productName = getStringCellValue(row.getCell(productNameColumnIndex));
-                String additionalShippingCost = getStringCellValue(row.getCell(additionalShippingCostColumnIndex));
+                int additionalShippingCost = getNumericCellValue(row.getCell(additionalShippingCostColumnIndex));
                 String parsingLink = getStringCellValue(row.getCell(parsingLinkColumnIndex));
                 int byteCount = getNumericCellValue(row.getCell(byteCountColumnIndex));
                 String caution = getStringCellValue(row.getCell(cautionColumnIndex));
@@ -138,6 +139,15 @@ public class ExcelImportService {
                             tags.remove(0);
                             map.put("items", tags);
                             productMap.put(productName, map);
+                        }
+
+                        if (additionalShippingCost > 0) {
+                            Cell additionalShippingCostCell = row.getCell(additionalShippingCostColumnIndex);
+                            if (additionalShippingCostCell == null) {
+                                additionalShippingCostCell = row.createCell(additionalShippingCostColumnIndex);
+
+                            }
+                            additionalShippingCostCell.setCellValue(ShippingCost.valueOfWeight(Double.parseDouble(String.valueOf(additionalShippingCost))).getCost());
                         }
                     }
                 }
