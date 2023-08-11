@@ -127,7 +127,30 @@ public class ExcelImportService {
                             if (productNameCell == null) {
                                 productNameCell = row.createCell(productNameColumnIndex);
                             }
-                            productNameCell.setCellValue(tags.get(0));
+
+                            String product = tags.get(0);
+                            if (caution != null && !caution.equals("")) {
+                                String[] productNames = product.split(" ");
+                                String[] cautions = caution.split(" ");
+
+                                if (productNames.length > 1) {
+                                    StringJoiner result = new StringJoiner(" ");
+
+                                    for (int i = 0; i < productNames.length; i++) {
+                                        if (i == 3) {
+                                            for (String cautionItem : cautions) {
+                                                if (!productName.contains(cautionItem)) {
+                                                    result.add(cautionItem);
+                                                }
+                                            }
+                                        }
+                                        result.add(productNames[i]);
+                                    }
+                                    product = result.toString();
+                                }
+                                row.getCell(cautionColumnIndex).setCellValue("");
+                            }
+                            productNameCell.setCellValue(product);
 
                             Cell categoryCell = row.getCell(categoryColumnIndex);
                             if (categoryCell == null) {

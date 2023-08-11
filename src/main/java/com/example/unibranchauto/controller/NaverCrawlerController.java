@@ -171,7 +171,7 @@ public class NaverCrawlerController {
 
         ZonedDateTime date = ZonedDateTime.now();
         String timestamp = date.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-        String fileName = "application_schedule_" + timestamp.substring(0, 12) + ".xlsx";
+        String fileName = "products_" + timestamp.substring(0, 12) + ".xlsx";
 
         // Set response headers
         HttpHeaders headers = new HttpHeaders();
