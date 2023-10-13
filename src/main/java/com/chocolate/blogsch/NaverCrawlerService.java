@@ -1,8 +1,7 @@
-package com.branch.upbranchauto2;
+package com.chocolate.blogsch;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -12,7 +11,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
 import java.util.regex.Pattern;
-import java.util.zip.InflaterInputStream;
+
 @RequiredArgsConstructor
 @Service
 public class NaverCrawlerService {

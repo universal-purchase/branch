@@ -1,6 +1,6 @@
-package com.branch.upbranchauto2.core.domain;
+package com.chocolate.blogsch.core.domain;
 
-import com.branch.upbranchauto2.search_blog.domain.Meta;
+import com.chocolate.blogsch.search.domain.Meta;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

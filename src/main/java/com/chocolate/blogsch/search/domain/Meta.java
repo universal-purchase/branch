@@ -1,4 +1,4 @@
-package com.branch.upbranchauto2.search_blog.domain;
+package com.chocolate.blogsch.search.domain;
 
 import lombok.AccessLevel;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.branch.upbranchauto2;
+package com.chocolate.blogsch;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;

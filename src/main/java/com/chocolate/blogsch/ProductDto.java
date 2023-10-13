@@ -1,4 +1,4 @@
-package com.branch.upbranchauto2;
+package com.chocolate.blogsch;
 
 import lombok.Builder;
 import lombok.Getter;
