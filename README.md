@@ -53,4 +53,4 @@ Response: 최대 10개의 인기 검색어와 해당 검색어의 검색 횟수�
 
 **[jar 파일]**
 - blog-search-0.0.1-SNAPSHOT.jar
-- 다운로드 링크 : https://drive.google.com/file/d/1kpusMZ9Sk11arh4yl3Uy4Ja8xirAPX80/view?usp=drive_link
+- 다운로드 링크 : https://drive.google.com/file/d/1kpusMZ9Sk11arh4yl3Uy4Ja8xirAPX80/view?usp=sharing
