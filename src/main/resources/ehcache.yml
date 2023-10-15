@@ -1,0 +1,12 @@
+# 캐시 매니저 설정
+configurations:
+  defaultCache:
+    maxEntriesLocalHeap: 1000
+    eternal: false
+    timeToLiveSeconds: 3600
+
+caches:
+  searchCache:
+    maxEntriesLocalHeap: 10000
+    eternal: true
+    timeToIdleSeconds: 3600

@@ -1,6 +1,6 @@
-﻿plugins {
+plugins {
     id 'java'
-    id 'org.springframework.boot' version '2.7.10'
+    id 'org.springframework.boot' version '2.5.10'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
 
@@ -14,44 +14,70 @@ configurations {
     }
 }
 
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.chocolate.blogsch.Application'
+    }
+}
+
+springBoot {
+    mainClass = 'com.chocolate.blogsch'
+}
+
+
 repositories {
     mavenCentral()
-//	maven{ url 'https://www.jitpack.io'} // tikxml
 }
 
 ext {
-    mapstructVersion = "1.5.3.Final"
     lombokVersion = "1.18.20"
     lombokMapstructBindingVersion = "0.2.0"
-
 }
 
-dependencies {
+compileJava.options.encoding = 'UTF-8'
 
+dependencies {
     implementation('org.springframework.boot:spring-boot-starter-web') {
         exclude module: 'spring-boot-starter-tomcat'
     }
+    implementation 'org.springframework.boot:spring-boot-starter'
     implementation('org.springframework.boot:spring-boot-starter-undertow')
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'junit:junit:4.13.1'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-    // mapstruct
-    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+    // H2 데이터베이스 의존성
+    implementation 'com.h2database:h2'
+
+    // Spring Data JPA 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // alternative to resttemplate
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.0.4'
+    implementation 'io.github.openfeign:feign-okhttp:11.6'
+
     // lombok
     compileOnly 'org.projectlombok:lombok'
-
-    // builder pattern using mapstruct
-    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-    annotationProcessor"org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
+    annotationProcessor "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.0'
 
     // io utils
     implementation 'commons-io:commons-io:2.11.0'
-
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    // poi
-    implementation 'org.apache.poi:poi:5.2.0'
-    implementation 'org.apache.poi:poi-ooxml:5.2.0'
+    implementation 'commons-codec:commons-codec:1.15'
+
+    //cache
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'org.ehcache:ehcache'
+
+    testImplementation 'org.mockito:mockito-core:3.9.0'
+
+    //swagger
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 
 }
-

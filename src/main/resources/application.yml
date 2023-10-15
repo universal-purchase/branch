@@ -1,0 +1,74 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: yoon
+    password: yoon123!
+  h2:
+    console:
+      enabled: true
+    path: /h2-console
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+    hibernate:
+      hbm2ddl:
+        auto: update
+    show-sql: false
+  cache:
+    type: ehcache
+    ehcache:
+      config: classpath:ehcache.xml
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
+  messages:
+    basename: messages/messages, messages/errors
+  jackson:
+    deserialization:
+      READ_UNKNOWN_ENUM_VALUES_AS_NULL: true
+naver:
+  clientId: LhOisVBX40SHXyvOt_WE
+  clientSecret: 4J8AvMYzF_
+kakao:
+  api-key: f962cdaccce8dd30837b9efc1351e9e0
+
+server:
+  error:
+    include-stacktrace: never
+  servlet:
+    context-path: /service
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+
+logging:
+  pattern:
+    console: "[%d %-5.5r][%highlight(%-5p)][%cyan(%-1.20class{1})][%yellow(%X{traceId:-})]|%msg%n"
+  level:
+    root: info
+    org.springframework.cache: DEBUG
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: basic
+  okhttp:
+    enabled: true
+
+api-services:
+  kakao-search-blog-service:
+    url: https://dapi.kakao.com
+  naver-search-blog-service:
+    url: https://openapi.naver.com
