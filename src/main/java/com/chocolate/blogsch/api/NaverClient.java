@@ -10,7 +10,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface NaverClient {
 
     @GetMapping("/v1/search/blog.json")
-    String searchBlog(@PathVariable("query") String query, @PathVariable("sort") String sort,
-                      @PathVariable("display") Integer display, @PathVariable("start") Integer start,
-                      @RequestHeader("X-Naver-Client-Id") String clientId, @RequestHeader("X-Naver-Client-Secret") String clientSecret);
+    String searchBlog(
+            @RequestParam("query") String query,
+            @RequestParam("sort") String sort,
+            @RequestParam("display") Integer display,
+            @RequestParam("start") Integer start,
+            @RequestHeader("X-Naver-Client-Id") String clientId,
+            @RequestHeader("X-Naver-Client-Secret") String clientSecret
+    );
+
 }

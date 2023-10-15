@@ -34,5 +34,23 @@
 **[API 명세]**
 - swagger ui : http://localhost:8080/service/swagger-ui/index.html
 
-[jar 파일]
-blog-search-0.0.1-SNAPSHOT-plain.jar
+1. 블로그 검색
+Endpoint: /v1/search/blog
+Method: GET
+Description: 입력된 검색어로 블로그를 검색합니다.
+Request Parameters:
+query (검색 키워드, 필수)
+sort (결과 문서 정렬 방식, 선택, 기본값: "accuracy")
+page (결과 페이지 번호, 선택, 기본값: 1)
+size (한 페이지에 보여질 문서 수, 선택, 기본값: 10)
+Response: 검색 결과를 JSON 형식으로 반환합니다.
+
+2. 인기 검색어 목록
+Endpoint: /v1/search/blog/populars
+Method: GET
+Description: 사용자들이 많이 검색한 순서대로, 최대 10개의 검색 키워드를 제공합니다.
+Response: 최대 10개의 인기 검색어와 해당 검색어의 검색 횟수를 JSON 형식으로 반환합니다.
+
+**[jar 파일]**
+- blog-search-0.0.1-SNAPSHOT.jar
+- 다운로드 링크 : https://drive.google.com/file/d/1kpusMZ9Sk11arh4yl3Uy4Ja8xirAPX80/view?usp=drive_link
