@@ -16,24 +16,23 @@ configurations {
 
 repositories {
     mavenCentral()
-    // maven{ url 'https://www.jitpack.io'} // tikxml
 }
 
 ext {
-    mapstructVersion = "1.5.3.Final"
     lombokVersion = "1.18.20"
     lombokMapstructBindingVersion = "0.2.0"
-    querydslVersion = "5.0.0"
 }
+
+compileJava.options.encoding = 'UTF-8'
 
 dependencies {
     implementation('org.springframework.boot:spring-boot-starter-web') {
         exclude module: 'spring-boot-starter-tomcat'
     }
     implementation 'org.springframework.boot:spring-boot-starter'
-
     implementation('org.springframework.boot:spring-boot-starter-undertow')
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'junit:junit:4.13.1'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
     // H2 데이터베이스 의존성
@@ -42,33 +41,31 @@ dependencies {
     // Spring Data JPA 의존성
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-    // querydsl
-    implementation "com.querydsl:querydsl-jpa:${querydslVersion}"
-    annotationProcessor "com.querydsl:querydsl-apt:${querydslVersion}"
-
     // alternative to resttemplate
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.0.4'
     implementation 'io.github.openfeign:feign-okhttp:11.6'
 
-
-
-    // mapstruct
-    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
     // lombok
     compileOnly 'org.projectlombok:lombok'
-
-    // builder pattern using mapstruct
-    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
 
-
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.0'
 
     // io utils
     implementation 'commons-io:commons-io:2.11.0'
-
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'commons-codec:commons-codec:1.15'
 
+    //cache
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'org.ehcache:ehcache'
+
+    testImplementation 'org.mockito:mockito-core:3.9.0'
+
+    //swagger
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 
 }

@@ -100,40 +100,6 @@ public class ExceptionHandlerAdvice {
     }
 
     /**
-     * @RequestParam binding 못했을 경우 발생
-     *
-     * @param request
-     * @param e
-     * @return
-     */
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    protected ErrorResponse handleMethodArgumentTypeMismatchException(HttpServletRequest request,
-                                                                      MethodArgumentTypeMismatchException e) {
-        log.error("handleException={} (URL={}, METHOD={})", e.getMessage(), request.getRequestURL(), request.getMethod(), e);
-
-        return ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, messageSource, e.getMessage());
-
-    }
-
-    /**
-     * 바인딩 에러 발생했을 경우
-     * @param e
-     * @return
-     */
-    @ExceptionHandler({BindException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    protected ErrorResponse handleBindException(HttpServletRequest request,
-                                                BindException e) {
-        log.error("handleException={} (URL={}, METHOD={})", e.getMessage(), request.getRequestURL(), request.getMethod(), e);
-
-        return ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, messageSource, e.getBindingResult());
-//        return ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, messageSource, e.getMessage());
-    }
-
-
-
-    /**
      * 데이터가 없을 경우
      * @param request
      * @param e
@@ -179,8 +145,6 @@ public class ExceptionHandlerAdvice {
 
     }
 
-
-
     /**
      * Request Param Binding 오류
      * @param e
@@ -209,95 +173,6 @@ public class ExceptionHandlerAdvice {
         log.error("handleException={} (URL={}, METHOD={})", e.getMessage(), request.getRequestURL(), request.getMethod(), e);
 
         return ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, messageSource);
-    }
-
-    /**
-     * dto enum 맵핑 오류
-     * @param e
-     * @return
-     */
-    @ExceptionHandler(InvalidFormatException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    protected ErrorResponse handleInvalidFormatException(HttpServletRequest request,
-                                                         InvalidFormatException e){
-        log.error("handleException={} (URL={}, METHOD={})", e.getMessage(), request.getRequestURL(), request.getMethod(), e);
-
-        return ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, messageSource);
-    }
-
-
-    /**
-     * Rest URI Key값과 RequestBody의 Key값이 다를 경우
-     * @param request
-     * @param e
-     * @return
-     */
-    @ExceptionHandler(ResourceBadRequestException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    protected ErrorResponse handleResourceBadRequestException(HttpServletRequest request,
-                                                              ResourceBadRequestException e){
-        log.error("handleException={}, {} (URL={}, METHOD={})", e.getClass().getName(), e.getMessage(), request.getRequestURL(), request.getMethod());
-
-        return ErrorResponse.of(ErrorCode.URI_PATH_AND_BODY_NOT_MATCH, messageSource);
-    }
-
-    /**
-     * DB 데이터 무결성 오류
-     */
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    protected ErrorResponse handleDataIntegrityViolationException(HttpServletRequest request,
-                                                                  DataIntegrityViolationException e){
-        log.error("handleException={} (URL={}, METHOD={})", e.getMessage(), request.getRequestURL(), request.getMethod(), e);
-
-        return ErrorResponse.of(ErrorCode.DUPLICATE_KEY, messageSource);
-    }
-
-    /**
-     * 시퀀스에 값을 입력하고 저장할 경우 발생하는 오류
-     * @param request
-     * @param e
-     * @return
-     */
-    @ExceptionHandler(InvalidDataAccessApiUsageException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    protected ErrorResponse handleInvalidDataAccessApiUsageException(HttpServletRequest request,
-                                                                     InvalidDataAccessApiUsageException e){
-        log.error("handleException={} (URL={}, METHOD={})", e.getMessage(), request.getRequestURL(), request.getMethod(), e);
-
-        return ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, messageSource);
-    }
-
-
-    /**
-     * JDBC SQLState: 22011
-     * The value is too large for the column. (Actual value: 21, Maximum value: 20)
-     * @param request
-     * @param e
-     * @return
-     */
-    @ExceptionHandler(DataException.class)
-    protected ErrorResponse handleDataException(HttpServletRequest request,
-                                                                   DataException e) {
-        log.error("handleException={} (URL={}, METHOD={})", e.getMessage(), request.getRequestURL(), request.getMethod(), e);
-
-        return ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, messageSource);
-    }
-
-
-    /**
-     * 서비스 단에서 발생한 오류
-     * - 오류 코드를 정의하여 사용
-     * @param request
-     * @param e
-     * @return
-     */
-    @ExceptionHandler(ServiceException.class)
-    protected ResponseEntity<ErrorResponse> handleServiceException(HttpServletRequest request,
-                                                                   ServiceException e) {
-        log.error("handleException={}, {} (URL={}, METHOD={})", e.getClass().getName(), e.getMessage(), request.getRequestURL(), request.getMethod(), e);
-        return ResponseEntity.status(HttpStatus.valueOf(e.errorCode.getStatus()))
-                .body(ErrorResponse.of(e.errorCode, messageSource, e.getMessage()));
     }
 
 }

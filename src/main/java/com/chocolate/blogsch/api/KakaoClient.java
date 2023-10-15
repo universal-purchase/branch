@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "kakao-search", url = "${api-services.kakao-search-blog-service.url}")
 public interface KakaoClient {
 
-    @GetMapping("/v2/search/blog?query={query}&sort={sort}&page={page}&size={size}")
-    BlogSearchResponse searchBlog(
-            @RequestParam String query,
-            @RequestParam Sort sort,
-            @RequestParam Integer page,
-            @RequestParam Integer size,
+    @GetMapping("/v2/search/blog")
+    String searchBlog(
+            @RequestParam("query") String query,
+            @RequestParam("sort") String sort,
+            @RequestParam("page") Integer page,
+            @RequestParam("size") Integer size,
             @RequestHeader("Authorization") String authorization
-    );
+    ) throws Exception;
 
 }

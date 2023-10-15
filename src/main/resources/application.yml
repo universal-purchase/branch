@@ -16,6 +16,10 @@ spring:
       hbm2ddl:
         auto: update
     show-sql: false
+  cache:
+    type: ehcache
+    ehcache:
+      config: classpath:ehcache.xml
   mvc:
     throw-exception-if-no-handler-found: true
   web:
@@ -26,9 +30,6 @@ spring:
   jackson:
     deserialization:
       READ_UNKNOWN_ENUM_VALUES_AS_NULL: true
-  cache:
-    ehcache:
-      config: ehcache.xml
 naver:
   clientId: LhOisVBX40SHXyvOt_WE
   clientSecret: 4J8AvMYzF_
@@ -44,14 +45,18 @@ server:
       charset: UTF-8
       force: true
       enabled: true
-  port: 8890
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
 
 logging:
   pattern:
     console: "[%d %-5.5r][%highlight(%-5p)][%cyan(%-1.20class{1})][%yellow(%X{traceId:-})]|%msg%n"
   level:
     root: info
-
+    org.springframework.cache: DEBUG
 feign:
   client:
     config:
@@ -61,6 +66,7 @@ feign:
         loggerLevel: basic
   okhttp:
     enabled: true
+
 api-services:
   kakao-search-blog-service:
     url: https://dapi.kakao.com

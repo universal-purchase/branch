@@ -13,7 +13,7 @@ import javax.persistence.Id;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PopularKeyword {
+public class SearchHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,7 +23,7 @@ public class PopularKeyword {
     private Long searchCount;
 
     @Builder
-    public PopularKeyword(String keyword, Long searchCount) {
+    public SearchHistory(String keyword, Long searchCount) {
         this.keyword = keyword;
         this.searchCount = searchCount;
     }
