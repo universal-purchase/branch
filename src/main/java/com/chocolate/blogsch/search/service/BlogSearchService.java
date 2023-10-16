@@ -45,9 +45,6 @@ public class BlogSearchService {
             // 카카오 블로그 검색 API를 호출하여 결과를 가져옵니다.
             String response = kakaoClient.searchBlog(query, sort, page, size, "KakaoAK " + kakaoProperties.getApikey());
             searchResponse = objectMapper.readValue(response, BlogSearchResponse.class);
-
-            // 검색 히스토리를 저장합니다.
-            saveSearchHistoryRepository(query);
         } catch (IOException e) {
             // 카카오 블로그 검색 API에서 예외가 발생한 경우, 네이버 블로그 검색 API를 사용합니다.
             String response = naverClient.searchBlog(query, sort, size, (page - 1) * page + 1, naverProperties.getClientId(), naverProperties.getClientSecret());
@@ -55,6 +52,8 @@ public class BlogSearchService {
 
             log.error("다음 블로그 검색 예외 발생: {}", e.getMessage(), e);
         }
+        saveSearchHistoryRepository(query);
+
         return searchResponse;
     }
 
